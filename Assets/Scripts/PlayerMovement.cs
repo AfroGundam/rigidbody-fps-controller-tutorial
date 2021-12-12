@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] float moveSpeed = 6f;
     [SerializeField] float airMultiplier = 0.4f;
+    [SerializeField] float dashForce = 10f;
     float movementMultiplier = 10f;
 
     [Header("Sprinting")]
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] KeyCode dashKey = KeyCode.LeftControl;
 
     [Header("Drag")]
     [SerializeField] float groundDrag = 6f;
@@ -80,6 +82,11 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
 
+        if (Input.GetKeyDown(dashKey))
+        {
+            Dash();
+        }
+
         slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
     }
 
@@ -89,6 +96,12 @@ public class PlayerMovement : MonoBehaviour
         verticalMovement = Input.GetAxisRaw("Vertical");
 
         moveDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;
+    }
+
+    void Dash()
+    {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.AddForce(moveDirection * dashForce, ForceMode.Impulse);
     }
 
     void Jump()
